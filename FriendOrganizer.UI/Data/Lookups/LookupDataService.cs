@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FriendOrganizer.UI.Data
+namespace FriendOrganizer.UI.Data.Lookups
 {
     public class LookupDataService : IFriendLookupDataService
     {
@@ -20,7 +20,7 @@ namespace FriendOrganizer.UI.Data
 
         public async Task<IEnumerable<LookupItem>> GetFriendLookupAsync()
         {
-            return await _context.Friends.AsNoTracking()
+            return await _context.Friends
                 .Select(f => new LookupItem { ID = f.ID, DisplayMember = f.FirstName + " " + f.LastName })
                 .ToListAsync();
         }

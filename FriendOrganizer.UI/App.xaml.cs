@@ -1,5 +1,8 @@
 ﻿using FriendOrganizer.DataAccess;
 using FriendOrganizer.UI.Data;
+using FriendOrganizer.UI.Data.Lookups;
+using FriendOrganizer.UI.Data.Repositories;
+using FriendOrganizer.UI.View.Services;
 using FriendOrganizer.UI.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,25 +22,30 @@ namespace FriendOrganizer.UI
         public App()
         {
             host = Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
-                {
-                    ConfigureServices(context.Configuration, services);
-                })
+                .ConfigureServices((context, services) => ConfigureServices(context.Configuration, services))
                 .Build();
         }
 
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
-            services.AddSingleton<IEventAggregator, EventAggregator>();
-
+            // View Models
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainViewModel>();
-            services.AddSingleton<INavigationViewModel, NavigationViewModel>();
-            services.AddSingleton<IFriendDetailViewModel, FriendDetailViewModel>();
+            services.AddScoped<INavigationViewModel, NavigationViewModel>();
+            services.AddTransient<IFriendDetailViewModel, FriendDetailViewModel>();
 
-            services.AddScoped<IFriendDataService, FriendDataService>();
+            //Repos
+            services.AddTransient<IFriendRepository, FriendRepository>();
             services.AddScoped<IFriendLookupDataService, LookupDataService>();
-            services.AddDbContext<FriendOrganizerContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("FriendOrganizerDb")));
+            
+            //Db contexts
+            services.AddDbContext<FriendOrganizerContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("FriendOrganizerDb")),
+                ServiceLifetime.Transient, ServiceLifetime.Transient);
+
+            //Other
+            services.AddSingleton<IEventAggregator, EventAggregator>();
+            services.AddTransient<Func<IFriendDetailViewModel>>(cont => () => cont.GetRequiredService<IFriendDetailViewModel>());
+            services.AddScoped<IMessageDialogService, MessageDialogService>();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -62,7 +70,7 @@ namespace FriendOrganizer.UI
 
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-
+            MessageBox.Show("Unhandled exception: " + e.Exception.Message);
             e.Handled = true;
         }
     }
