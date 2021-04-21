@@ -60,5 +60,10 @@ namespace FriendOrganizer.UI
             base.OnExit(e);
         }
 
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+
+            e.Handled = true;
+        }
     }
 }
