@@ -1,6 +1,7 @@
 ﻿using FriendOrganizer.UI.Data.Lookups;
 using FriendOrganizer.UI.Event;
 using Prism.Events;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace FriendOrganizer.UI.ViewModel
             _friendLookupService = friendLookupService;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<AfterFriendSavedEvent>().Subscribe(AfterFriendSaved);
-
+            _eventAggregator.GetEvent<AfterFriendDeletedEvent>().Subscribe(AfterFriendDeleted);
         }
 
         public ObservableCollection<NavigationItemViewModel> Friends { get; set; }
@@ -36,8 +37,23 @@ namespace FriendOrganizer.UI.ViewModel
 
         private void AfterFriendSaved(AfterFriendSavedEventArgs obj)
         {
-            var lookupItem = Friends.Single(l => l.ID == obj.ID);
-            lookupItem.DisplayMember = obj.DisplayMember;
+            var lookupItem = Friends.SingleOrDefault(l => l.ID == obj.ID);
+            if(lookupItem == null)
+            {
+                Friends.Add(new NavigationItemViewModel(obj.ID, obj.DisplayMember, _eventAggregator));
+            } else
+            {
+                lookupItem.DisplayMember = obj.DisplayMember;
+            }
+        }
+
+        private void AfterFriendDeleted(int friendId)
+        {
+            var friend = Friends.SingleOrDefault(f => f.ID == friendId);
+            if(friend != null)
+            {
+                Friends.Remove(friend);
+            }
         }
     }
 }

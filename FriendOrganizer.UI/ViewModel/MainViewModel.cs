@@ -1,8 +1,10 @@
 ﻿using FriendOrganizer.UI.Event;
 using FriendOrganizer.UI.View.Services;
+using Prism.Commands;
 using Prism.Events;
 using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FriendOrganizer.UI.ViewModel
 {
@@ -22,9 +24,16 @@ namespace FriendOrganizer.UI.ViewModel
             _friendDetailViewModelCreator = friendDetailViewModelCreator;
             _eventAggregator.GetEvent<OpenFriendDetailViewEvent>()
               .Subscribe(OnOpenFriendDetailView);
+            _eventAggregator.GetEvent<AfterFriendDeletedEvent>()
+                .Subscribe(AfterFriendDeleted);
+
             _messageDialogService = messageDialogService;
+
+            CreateNewFriendCommand = new DelegateCommand(OnCreateNewFriendExecute);
             NavigationViewModel = navigationViewModel;
         }
+
+        public ICommand CreateNewFriendCommand { get; }
 
         public INavigationViewModel NavigationViewModel { get; }
 
@@ -38,17 +47,16 @@ namespace FriendOrganizer.UI.ViewModel
             }
         }
 
-
         public async Task LoadAsync()
         {
             await NavigationViewModel.LoadAsync();
         }
 
-        private async void OnOpenFriendDetailView(int friendId)
+        private async void OnOpenFriendDetailView(int? friendId)
         {
-            if(FriendDetailViewModel != null && FriendDetailViewModel.HasChanges)
+            if (FriendDetailViewModel != null && FriendDetailViewModel.HasChanges)
             {
-               var result = _messageDialogService.ShowOkCancelDialog("You've made changes. Navigate away?", "Question");
+                var result = _messageDialogService.ShowOkCancelDialog("You've made changes. Navigate away?", "Question");
                 if (result == MessageDialogResult.Cancel)
                 {
                     return;
@@ -56,6 +64,16 @@ namespace FriendOrganizer.UI.ViewModel
             }
             FriendDetailViewModel = _friendDetailViewModelCreator();
             await FriendDetailViewModel.LoadAsync(friendId);
+        }
+
+        private void OnCreateNewFriendExecute()
+        {
+            OnOpenFriendDetailView(null);
+        }
+
+        private void AfterFriendDeleted(int friendId)
+        {
+            FriendDetailViewModel = null;
         }
     }
 }
