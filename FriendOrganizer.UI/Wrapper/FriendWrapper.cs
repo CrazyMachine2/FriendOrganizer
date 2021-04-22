@@ -15,19 +15,29 @@ namespace FriendOrganizer.UI.Wrapper
         public string FirstName
         {
             get { return GetValue<string>(); }
-            set
-            { SetValue(value); }
+            set{ SetValue(value); }
         }
         public string LastName
         {
             get { return GetValue<string>(); }
-            set
-            { SetValue(value); }
+            set { SetValue(value); }
         }
 
         public string Email
         {
             get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+
+        public int? FavoriteLanguageID
+        {
+            get { return GetValue<int?>(); }
+            set { SetValue(value); }
+        }
+
+        public ICollection<FriendPhoneNumber> PhoneNumbers
+        {
+            get { return GetValue<ICollection<FriendPhoneNumber>>(); }
             set { SetValue(value); }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using FriendOrganizer.DataAccess;
-using FriendOrganizer.UI.Data;
 using FriendOrganizer.UI.Data.Lookups;
 using FriendOrganizer.UI.Data.Repositories;
 using FriendOrganizer.UI.View.Services;
@@ -37,6 +36,7 @@ namespace FriendOrganizer.UI
             //Repos
             services.AddTransient<IFriendRepository, FriendRepository>();
             services.AddScoped<IFriendLookupDataService, LookupDataService>();
+            services.AddScoped<IProgrammingLanguageLookupDataService, LookupDataService>();
             
             //Db contexts
             services.AddDbContext<FriendOrganizerContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("FriendOrganizerDb")),
