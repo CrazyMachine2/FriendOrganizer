@@ -31,7 +31,7 @@ namespace FriendOrganizer.UI
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainViewModel>();
             services.AddScoped<INavigationViewModel, NavigationViewModel>();
-            services.AddTransient<IFriendDetailViewModel, FriendDetailViewModel>();
+            services.AddTransient<IDetailViewModel, FriendDetailViewModel>();
 
             //Repos
             services.AddTransient<IFriendRepository, FriendRepository>();
@@ -44,7 +44,7 @@ namespace FriendOrganizer.UI
 
             //Other
             services.AddSingleton<IEventAggregator, EventAggregator>();
-            services.AddTransient<Func<IFriendDetailViewModel>>(cont => () => cont.GetRequiredService<IFriendDetailViewModel>());
+            services.AddTransient<Func<IDetailViewModel>>(cont => () => cont.GetRequiredService<IDetailViewModel>());
             services.AddScoped<IMessageDialogService, MessageDialogService>();
         }
 
