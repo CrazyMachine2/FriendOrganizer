@@ -31,12 +31,16 @@ namespace FriendOrganizer.UI
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainViewModel>();
             services.AddScoped<INavigationViewModel, NavigationViewModel>();
-            services.AddTransient<IDetailViewModel, FriendDetailViewModel>();
+            services.AddTransient<IFriendDetailViewModel, FriendDetailViewModel>();
+            services.AddTransient<IMeetingDetailViewModel, MeetingDetailViewModel>();
 
-            //Repos
+            //Repos and lookup services
             services.AddTransient<IFriendRepository, FriendRepository>();
+            services.AddTransient<IMeetingRepository, MeetingRepository>();
+
             services.AddScoped<IFriendLookupDataService, LookupDataService>();
             services.AddScoped<IProgrammingLanguageLookupDataService, LookupDataService>();
+            services.AddScoped<IMeetingLookupDataService, LookupDataService>();
             
             //Db contexts
             services.AddDbContext<FriendOrganizerContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("FriendOrganizerDb")),
@@ -44,7 +48,8 @@ namespace FriendOrganizer.UI
 
             //Other
             services.AddSingleton<IEventAggregator, EventAggregator>();
-            services.AddTransient<Func<IDetailViewModel>>(cont => () => cont.GetRequiredService<IDetailViewModel>());
+            services.AddTransient<Func<IFriendDetailViewModel>>(cont => () => cont.GetRequiredService<IFriendDetailViewModel>());
+            services.AddTransient<Func<IMeetingDetailViewModel>>(cont => () => cont.GetRequiredService<IMeetingDetailViewModel>());
             services.AddScoped<IMessageDialogService, MessageDialogService>();
         }
 

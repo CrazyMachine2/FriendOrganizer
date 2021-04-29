@@ -12,6 +12,8 @@ namespace FriendOrganizer.DataAccess
 
         public DbSet<FriendPhoneNumber> FriendPhoneNumbers { get; set; }
 
+        public DbSet<Meeting> Meetings { get; set; }
+
         public FriendOrganizerContext(DbContextOptions<FriendOrganizerContext> options) : base(options)
         {
 
@@ -23,6 +25,7 @@ namespace FriendOrganizer.DataAccess
 
             modelBuilder.ApplyConfiguration(new FriendConfiguration());
             modelBuilder.ApplyConfiguration(new ProgrammingLanguageConfiguration());
+            modelBuilder.ApplyConfiguration(new MeetingConfiguration());
         }
     }
 }

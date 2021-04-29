@@ -23,7 +23,6 @@ namespace FriendOrganizer.UI.ViewModel
         private readonly IProgrammingLanguageLookupDataService _programmingLanguageLookupDataService;
         private FriendWrapper _friend;
         private FriendPhoneNumberWrapper _selectedPhoneNumber;
-        private bool _hasChanges;
 
         public FriendDetailViewModel(IFriendRepository friendRepository,
             IEventAggregator eventAggregator,
@@ -63,7 +62,9 @@ namespace FriendOrganizer.UI.ViewModel
             }
         }
         public ICommand AddPhoneNumberCommand { get; }
+
         public ICommand RemovePhoneNumberCommand { get; }
+
         public ObservableCollection<LookupItem> ProgrammingLanguages { get; }
 
         public ObservableCollection<FriendPhoneNumberWrapper> PhoneNumbers { get; }
